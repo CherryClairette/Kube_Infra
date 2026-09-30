@@ -1,0 +1,23 @@
+---
+- name: Prepare all Kubernetes nodes
+  hosts: kubernetes
+  become: true
+
+  roles:
+    - common
+    - containerd
+    - kubernetes
+
+- name: Initialize Kubernetes control plane
+  hosts: control_plane
+  become: true
+
+  roles:
+    - control_plane
+
+- name: Join Kubernetes workers
+  hosts: join_workers
+  become: true
+
+  roles:
+    - join_workers
