@@ -1,1 +1,2 @@
 ansible_host: 10.0.0.35
+ansible_user: ec2-user
