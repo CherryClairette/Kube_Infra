@@ -21,7 +21,7 @@
         operator:
           clusterPoolIPv4PodCIDRList:
             - "{{ cilium_pod_cidr }}"
-          clusterPoolIPv4MaskSize: "{{ cilium_node_mask_size | int }}"
+          clusterPoolIPv4MaskSize: 24
 
       routingMode: tunnel
       tunnelProtocol: vxlan
