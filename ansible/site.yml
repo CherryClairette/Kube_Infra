@@ -21,3 +21,9 @@
 
   roles:
     - join_workers
+
+- name: Install Cilium networking
+  hosts: control_plane
+  become: true
+  roles:
+    - cilium
