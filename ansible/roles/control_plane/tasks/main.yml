@@ -1,0 +1,64 @@
+
+---
+
+- name: Validate the control-plane IP
+  ansible.builtin.assert:
+    that:
+      - kube_control_plane_ip is defined
+      - kube_control_plane_ip != "10.0.0.179"
+    fail_msg: "Set the private IP of kube-1 first." 
+
+
+- name: Check containerd service
+  ansible.builtin.command:
+    cmd: systemctl is-active containerd
+  changed_when: false
+
+
+- name: Get kubeadm version
+  ansible.builtin.command:
+    cmd: kubeadm version -o short
+  register: kubeadm_version
+  changed_when: false
+
+
+- name: Initialize Kubernetes control plane
+  ansible.builtin.command:
+    argv:
+      - kubeadm
+      - init
+      - "--apiserver-advertise-address={{ kube_control_plane_ip }}"
+      - "--pod-network-cidr={{ kube_pod_network_cidr }}"
+      - "--cri-socket={{ kube_cri_socket }}"
+      - "--kubernetes-version={{ kubeadm_version.stdout | trim }}"
+      - "--skip-token-print"
+    creates: /etc/kubernetes/admin.conf
+
+
+- name: Wait for Kubernetes API server
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - get
+      - --raw=/readyz
+  register: apiserver_ready
+  until: apiserver_ready.rc == 0
+  retries: 24
+  delay: 5
+  changed_when: false
+
+
+- name: Get Kubernetes nodes
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - get
+      - nodes
+  register: kubernetes_nodes
+  changed_when: false
+
+- name: Display Kubernetes nodes
+  ansible.builtin.debug:
+    var: kubernetes_nodes.stdout_lines

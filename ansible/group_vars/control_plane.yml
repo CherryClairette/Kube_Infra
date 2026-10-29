@@ -1,0 +1,5 @@
+kube_control_plane_ip: "10.0.0.179"
+
+kube_pod_network_cidr: "192.168.0.0/16"
+
+kube_cri_socket: "unix:///run/containerd/containerd.sock"
