@@ -1,0 +1,37 @@
+
+---
+
+- name: Check if worker is already configured
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: worker_kubeconfig
+
+
+- name: Check control-plane API connectivity
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[groups['control_plane'][0]].kube_control_plane_ip }}"
+    port: 6443
+    timeout: 30
+  when: not worker_kubeconfig.stat.exists
+
+
+- name: Generate worker join command
+  ansible.builtin.command:
+    argv:
+      - kubeadm
+      - token
+      - create
+      - --ttl=30m
+      - --print-join-command
+  delegate_to: "{{ groups['control_plane'][0] }}"
+  run_once: true
+  register: worker_join_command
+  no_log: true
+
+
+- name: Join worker to Kubernetes cluster
+  ansible.builtin.command:
+    argv: "{{ worker_join_command.stdout.split() + ['--cri-socket', kube_cri_socket, '--node-name', inventory_hostname] }}"
+    creates: /etc/kubernetes/kubelet.conf
+  when: not worker_kubeconfig.stat.exists
+  no_log: true

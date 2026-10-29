@@ -5,3 +5,5 @@ cilium_pod_cidr: "192.168.0.0/16"
 cilium_node_mask_size: 24
 
 cilium_chart_version: "1.20.4"
+
+kube_cri_socket: "unix:///run/containerd/containerd.sock"
