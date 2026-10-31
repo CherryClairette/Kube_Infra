@@ -1,0 +1,41 @@
+name: Ansible syntax check
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+  workflow_dispatch: # Enable manual run of workflow
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install ansible-core
+        run: pip install "ansible-core~=2.21.0"
+
+      # For now not needed
+      #- name: Install collections (if any)
+      #  run: |
+      #    if [ -f requirements.yml ]; then
+      #      ansible-galaxy collection install -r requirements.yml
+      #    fi
+
+      - name: Check playbook syntax
+        run: ansible-playbook -i inventory.ini site.yml --syntax-check

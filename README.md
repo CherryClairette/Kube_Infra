@@ -98,7 +98,7 @@ Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https:/
 
 - [x] Architecture, tech stack, and initial project plan drafted
 - [x] Team kickoff meeting — walk the architecture, assign ownership, lock the working schedule
-- [ ] Follow Up # 1: present architecture, tech choices, and plan (no working cluster required yet)
+- [x] Follow Up # 1: present architecture, tech choices, and plan (no working cluster required yet)
 - [ ] Cluster provisioning (Ansible)
 - [ ] Platform layer (the 6 jobs above)
 - [ ] App conversion + GitOps deployment
