@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches: [main, dev]
-  workflow_dispatch: # Enable manual run of workflow
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,6 +17,9 @@ jobs:
   syntax-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ansible
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -25,10 +28,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
 
       - name: Install ansible-core
-        run: pip install "ansible-core~=2.21.0"
+        run: pip install -r requirements.txt
 
       # For now not needed
       #- name: Install collections (if any)
