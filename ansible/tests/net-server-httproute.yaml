@@ -7,7 +7,7 @@ metadata:
 spec:
   parentRefs:
   - name: trafeik-gateway
-  namespace: traefik
+    namespace: traefik
   rules:
   - matches:
     - path:
