@@ -6,12 +6,12 @@ metadata:
   namespace: pod-net-test
 spec:
   parentRefs:
-  - name: trafeik-gateway
+  - name: traefik-gateway
     namespace: traefik
   rules:
   - matches:
     - path:
         value: /
     backendRefs:
-    - name: net-server
+    - name: net-server-svc
       port: 8080
