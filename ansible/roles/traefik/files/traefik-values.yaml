@@ -12,16 +12,16 @@ gateway:
       namespacePolicy:
         from: All
 
-  websecure:
-    port: 8443
-    protocol: HTTPS
-    hostname: app.13.135.22.141.sslip.io
-    namespacePolicy:
-      from: All
-    mode: Terminate
-    certificateRef:
-      - kind: Secret
-        name: net-server-staging-tls
+    websecure:
+      port: 8443
+      protocol: HTTPS
+      hostname: app.13.135.22.141.sslip.io
+      namespacePolicy:
+        from: All
+      mode: Terminate
+      certificateRef:
+        - kind: Secret
+          name: net-server-staging-tls
 
 service:
   spec:
