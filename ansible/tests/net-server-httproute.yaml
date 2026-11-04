@@ -7,19 +7,18 @@ metadata:
 
 spec:
   parentRefs:
-  - name: traefik-gateway
-    namespace: traefik
-    sectionName: web
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
 
-  - name: traefik-gateway
-    namespace: traefik
-    sectionName: websecure
+  hostnames:
+    - app.13.135.22.141.sslip.io
 
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: net-server-svc
-      port: 8080
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
+        - name: net-server-svc
+          port: 8080
