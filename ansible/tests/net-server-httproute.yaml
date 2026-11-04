@@ -17,7 +17,8 @@ spec:
 
   rules:
   - matches:
-    - path: PathPrefix
+    - path:
+        type: PathPrefix
         value: /
     backendRefs:
     - name: net-server-svc
