@@ -1,0 +1,14 @@
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: net-server-production-certificate
+  namespace: traefik
+spec:
+  secretName: net-server-production-tls
+  dnsNames:
+    - app.13.135.22.141.sslip.io
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
