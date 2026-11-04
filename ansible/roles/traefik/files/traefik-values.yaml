@@ -12,6 +12,17 @@ gateway:
       namespacePolicy:
         from: All
 
+  websecure:
+    port: 8443
+    protocol: HTTPS
+    hostname: app.13.135.22.141.sslip.io
+    namespacePolicy:
+      from: All
+    mode: Terminate
+    certificateRef:
+      - kind: Secret
+        name: net-server-staging-tls
+
 service:
   spec:
     type: NodePort
@@ -20,3 +31,7 @@ ports:
   web:
     port: 80
     nodePort: 30080
+
+  websecure:
+    port: 8443
+    nodePort: 31345
