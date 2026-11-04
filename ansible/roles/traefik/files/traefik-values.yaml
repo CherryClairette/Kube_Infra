@@ -21,7 +21,7 @@ gateway:
       mode: Terminate
       certificateRefs:
         - kind: Secret
-          name: net-server-staging-tls
+          name: net-server-production-tls
 
 service:
   spec:
