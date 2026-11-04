@@ -4,13 +4,20 @@ kind: HTTPRoute
 metadata:
   name: net-server-httproute
   namespace: pod-net-test
+
 spec:
   parentRefs:
   - name: traefik-gateway
     namespace: traefik
+    sectionName: web
+
+  - name: traefik-gateway
+    namespace: traefik
+    sectionName: websecure
+
   rules:
   - matches:
-    - path:
+    - path: PathPrefix
         value: /
     backendRefs:
     - name: net-server-svc
