@@ -19,7 +19,7 @@ gateway:
       namespacePolicy:
         from: All
       mode: Terminate
-      certificateRef:
+      certificateRefs:
         - kind: Secret
           name: net-server-staging-tls
 
