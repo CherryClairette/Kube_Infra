@@ -18,5 +18,4 @@ argocd_kubectl:
 # Manifests applied to hand control over to Git (path relative to this repo).
 argocd_bootstrap_dir: "{{ playbook_dir }}/../argocd/bootstrap"
 argocd_bootstrap_files:
-  - project.yaml
   - root-app.yaml
