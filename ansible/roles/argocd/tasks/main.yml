@@ -53,25 +53,28 @@
     - statefulset/argocd-application-controller
   changed_when: false
 
+# Check if argo CD is already configured.
+- name: Check whether the Argo CD root application is already configured
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['-n', argocd_namespace, 'get', 'application', 'root-app', '-o', 'name'] }}"
+  register: argocd_bootstrap_existing
+  failed_when: argocd_bootstrap_existing.rc not in [0, 1]
+  changed_when: false
+
 # Safety net: do not hand Argo CD a repo URL that does not exist.
-#- name: Check the bootstrap manifests have no placeholder left
-#  ansible.builtin.assert:
-#    that: "'REPLACE_ME' not in lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item)"
-#    fail_msg: "{{ item }} still contains REPLACE_ME: set your GitHub repository URL."
-#  loop: "{{ argocd_bootstrap_files }}"
-#
-## The manifests are read on the Ansible side and piped to kubectl, so no file is copied to the node.
-#- name: Apply the bootstrap manifests (AppProject, then root application)
-#  ansible.builtin.command:
-#    argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
-#    stdin: "{{ lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item) }}"
-#  loop: "{{ argocd_bootstrap_files }}"
-#  register: argocd_bootstrap_result
-#  changed_when: "'created' in argocd_bootstrap_result.stdout or 'configured' in argocd_bootstrap_result.stdout"
-#
-#- name: Show how to log in
-#  ansible.builtin.debug:
-#    msg:
-#      - "Argo CD is running and the root application is applied."
-#      - "Initial admin password (run on the control plane, do not paste it in logs):"
-#      - "kubectl -n {{ argocd_namespace }} get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo"
+- name: Check the bootstrap manifests have no placeholder left
+  ansible.builtin.assert:
+    that: "'REPLACE_ME' not in lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item)"
+    fail_msg: "{{ item }} still contains REPLACE_ME: set your GitHub repository URL."
+  loop: "{{ argocd_bootstrap_files }}"
+  when: argocd_bootstrap_existing.rc != 0
+
+# The manifests are read on the Ansible side and piped to kubectl, so no file is copied to the node.
+- name: Apply the bootstrap manifests
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
+    stdin: "{{ lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item) }}"
+  loop: "{{ argocd_bootstrap_files }}"
+  register: argocd_bootstrap_result
+  changed_when: "'created' in argocd_bootstrap_result.stdout or 'configured' in argocd_bootstrap_result.stdout"
+  when: argocd_bootstrap_existing.rc != 0
