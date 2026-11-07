@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/CherryClairette/Kube_Infra.git
+    repoURL: git@github.com:CherryClairette/Kube_Infra.git
     targetRevision: feat/argo-cd
     path: argocd/components/registry/overlays/cluster
   destination:

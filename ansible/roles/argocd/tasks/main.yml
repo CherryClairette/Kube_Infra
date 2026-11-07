@@ -53,6 +53,39 @@
     - statefulset/argocd-application-controller
   changed_when: false
 
+- name: Validate private repository credentials are supplied
+  ansible.builtin.assert:
+    that:
+      - argocd_repository_ssh_private_key is defined
+      - argocd_repository_ssh_private_key | length > 0
+    fail_msg: >-
+      argocd_repository_ssh_private_key must be supplied from Ansible Vault
+      or a secret manager when argocd_repository_enabled is true.
+  when: argocd_repository_enabled | bool
+
+- name: Register the private repository with Argo CD
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
+    stdin: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: {{ argocd_repository_secret_name }}
+        namespace: {{ argocd_namespace }}
+        labels:
+          argocd.argoproj.io/secret-type: repository
+      stringData:
+        type: git
+        url: {{ argocd_repository_url }}
+        sshPrivateKey: |
+          {{ argocd_repository_ssh_private_key | indent(10, true) }}
+  no_log: true
+  register: argocd_repository_result
+  changed_when: >-
+    'created' in argocd_repository_result.stdout or
+    'configured' in argocd_repository_result.stdout
+  when: argocd_repository_enabled | bool
+
 # Check if argo CD is already configured.
 - name: Check whether the Argo CD root application is already configured
   ansible.builtin.command:
