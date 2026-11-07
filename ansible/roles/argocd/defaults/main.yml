@@ -19,3 +19,8 @@ argocd_kubectl:
 argocd_bootstrap_dir: "{{ playbook_dir }}/../argocd/bootstrap"
 argocd_bootstrap_files:
   - root-app.yaml
+
+# The repository is private and uses SSH. 
+argocd_repository_enabled: true
+argocd_repository_url: "git@github.com:CherryClairette/Kube_Infra.git"
+argocd_repository_secret_name: argocd-repository
