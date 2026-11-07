@@ -66,19 +66,25 @@
 - name: Register the private repository with Argo CD
   ansible.builtin.command:
     argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
-    stdin: |
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: {{ argocd_repository_secret_name }}
-        namespace: {{ argocd_namespace }}
-        labels:
-          argocd.argoproj.io/secret-type: repository
-      stringData:
-        type: git
-        url: {{ argocd_repository_url }}
-        sshPrivateKey: |
-          {{ argocd_repository_ssh_private_key | indent(10, true) }}
+    stdin: >-
+      {{
+        {
+          'apiVersion': 'v1',
+          'kind': 'Secret',
+          'metadata': {
+            'name': argocd_repository_secret_name,
+            'namespace': argocd_namespace,
+            'labels': {
+              'argocd.argoproj.io/secret-type': 'repository'
+            }
+          },
+          'stringData': {
+            'type': 'git',
+            'url': argocd_repository_url,
+            'sshPrivateKey': argocd_repository_ssh_private_key
+          }
+        } | to_json
+      }}
   no_log: true
   register: argocd_repository_result
   changed_when: >-
