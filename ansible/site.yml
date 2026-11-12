@@ -34,3 +34,5 @@
   roles:
     - role: argocd
       tags: [argocd]
+    - role: edge_forwarding
+      tags: [edge_forwarding]
