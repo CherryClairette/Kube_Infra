@@ -2,3 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - configmap.yaml
+  - whoami-deployment.yaml
+  - whoami-service.yaml
+  - gateway.yaml
+  - httproute.yaml
+configurations:
+  - kustomizeconfig.yaml
