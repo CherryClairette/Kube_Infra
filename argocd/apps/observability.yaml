@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:CherryClairette/Kube_Infra.git
     targetRevision: feat/argo-cd
-    path: argocd/components/observability/overlays/cluster
+    path: argocd/components/observability/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

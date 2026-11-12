@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:CherryClairette/Kube_Infra.git
     targetRevision: feat/argo-cd
-    path: argocd/apps/test
+    path: argocd/apps
     directory:
       recurse: false
   destination:

@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:CherryClairette/Kube_Infra.git
     targetRevision: feat/argo-cd
-    path: argocd/components/identity/overlays/cluster
+    path: argocd/components/identity/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: identity
