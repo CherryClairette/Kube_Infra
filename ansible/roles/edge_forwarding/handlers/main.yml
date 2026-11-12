@@ -1,4 +1,0 @@
----
-- name: Load kube-traefik nftables rules
-  ansible.builtin.command: nft -f /etc/nftables.d/kube-traefik.nft
-  changed_when: true
