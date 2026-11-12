@@ -1,0 +1,43 @@
+deployment:
+  replicas: 1
+
+providers:
+  kubernetesIngress:
+    enabled: false
+  kubernetesGateway:
+    enabled: true
+
+gateway:
+  enabled: false
+
+service:
+  spec:
+    type: NodePort
+    externalTrafficPolicy: Local
+
+ports:
+  web:
+    port: 8000
+    exposedPort: 80
+    nodePort: 30080
+    expose:
+      default: true
+  websecure:
+    port: 8443
+    exposedPort: 443
+    nodePort: 30443
+    expose:
+      default: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+podLabels:
+  app.kubernetes.io/name: traefik
+  app.kubernetes.io/part-of: platform
+  app.kubernetes.io/managed-by: argocd
