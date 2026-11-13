@@ -30,3 +30,22 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+    - name: web-argocd
+      protocol: HTTP
+      port: 8000
+      hostname: argocd.13.135.22.141.sslip.io
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure-argocd
+      protocol: HTTPS
+      port: 8443
+      hostname: argocd.13.135.22.141.sslip.io
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: argocd-staging-tls
+            namespace: traefik-tls
+      allowedRoutes:
+        namespaces:
+          from: All
