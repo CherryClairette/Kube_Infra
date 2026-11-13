@@ -17,4 +17,16 @@ spec:
       hostname: app.13.135.22.141.sslip.io
       allowedRoutes:
         namespaces:
+          from: All
+    - name: websecure
+      protocol: HTTPS
+      port: 443
+      hostname: app.13.135.22.141.sslip.io
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: whoami-staging-tls
+            namespace: traefik-tls
+      allowedRoutes:
+        namespaces:
           from: Same
