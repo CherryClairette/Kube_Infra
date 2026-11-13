@@ -2,11 +2,12 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: whoami-staging
+  namespace: traefik-tls
   annotations:
     argocd.argoproj.io/sync-wave: "30"
   labels:
     app.kubernetes.io/name: whoami-staging
-    app.kubernetes.io/part-of: gateway-api-test
+    app.kubernetes.io/part-of: cert-manager
     app.kubernetes.io/managed-by: argocd
 spec:
   secretName: whoami-staging-tls

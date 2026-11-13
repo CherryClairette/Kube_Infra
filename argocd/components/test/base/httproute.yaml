@@ -11,6 +11,7 @@ metadata:
 spec:
   parentRefs:
     - name: traefik-gateway
+      sectionName: websecure
   hostnames:
     - app.13.135.22.141.sslip.io
   rules:
