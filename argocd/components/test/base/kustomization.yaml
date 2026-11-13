@@ -6,5 +6,6 @@ resources:
   - whoami-service.yaml
   - gateway.yaml
   - httproute.yaml
+  - certificate-staging.yaml
 configurations:
   - kustomizeconfig.yaml
