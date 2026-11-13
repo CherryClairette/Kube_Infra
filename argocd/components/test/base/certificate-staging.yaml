@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: whoami-staging
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: whoami-staging
+    app.kubernetes.io/part-of: gateway-api-test
+    app.kubernetes.io/managed-by: argocd
+spec:
+  secretName: whoami-staging-tls
+  dnsNames:
+    - app.13.135.22.141.sslip.io
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer

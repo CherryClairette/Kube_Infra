@@ -1,0 +1,119 @@
+---
+# Bootstrap of Argo CD. Runs on the control plane, after Cilium.
+# The install only happens when Argo CD is not already there. Once it is running,
+# the cluster contents are managed from Git by Argo CD, not by Ansible.
+
+- name: Wait for all nodes to be Ready
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['wait', '--for=condition=Ready', 'nodes', '--all', '--timeout=300s'] }}"
+  changed_when: false
+
+# kubectl get exits 0 if the deployment exists and 1 if it is not found.
+- name: Check whether Argo CD is already installed
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['-n', argocd_namespace, 'get', 'deployment', 'argocd-server', '-o', 'name'] }}"
+  register: argocd_existing
+  failed_when: argocd_existing.rc not in [0, 1]
+  changed_when: false
+
+- name: Install Argo CD
+  when: argocd_force_install | bool or argocd_existing.rc != 0
+  block:
+    - name: Create the Argo CD namespace
+      ansible.builtin.command:
+        argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
+        stdin: |
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: {{ argocd_namespace }}
+      register: argocd_namespace_result
+      changed_when: "'created' in argocd_namespace_result.stdout"
+
+    # Server-side apply: Argo CD's CRDs are too large for a client-side apply.
+    - name: Apply the Argo CD install manifest
+      ansible.builtin.command:
+        argv: "{{ argocd_kubectl + ['apply', '--server-side', '-n', argocd_namespace, '-f', argocd_install_url] }}"
+      changed_when: true
+
+- name: Wait for the Argo CD CRDs to be established
+  ansible.builtin.command:
+    argv: >-
+      {{ argocd_kubectl + ['wait', '--for=condition=Established',
+      'crd/applications.argoproj.io', 'crd/appprojects.argoproj.io', '--timeout=120s'] }}
+  changed_when: false
+
+- name: Wait for Argo CD workloads to be rolled out
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['-n', argocd_namespace, 'rollout', 'status', item, '--timeout=300s'] }}"
+  loop:
+    - deployment/argocd-redis
+    - deployment/argocd-repo-server
+    - deployment/argocd-server
+    - statefulset/argocd-application-controller
+  changed_when: false
+
+- name: Validate private repository credentials are supplied
+  ansible.builtin.assert:
+    that:
+      - argocd_repository_ssh_private_key is defined
+      - argocd_repository_ssh_private_key | length > 0
+    fail_msg: >-
+      argocd_repository_ssh_private_key must be supplied from Ansible Vault
+      or a secret manager when argocd_repository_enabled is true.
+  when: argocd_repository_enabled | bool
+
+- name: Register the private repository with Argo CD
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
+    stdin: >-
+      {{
+        {
+          'apiVersion': 'v1',
+          'kind': 'Secret',
+          'metadata': {
+            'name': argocd_repository_secret_name,
+            'namespace': argocd_namespace,
+            'labels': {
+              'argocd.argoproj.io/secret-type': 'repository'
+            }
+          },
+          'stringData': {
+            'type': 'git',
+            'url': argocd_repository_url,
+            'sshPrivateKey': argocd_repository_ssh_private_key
+          }
+        } | to_json
+      }}
+  no_log: true
+  register: argocd_repository_result
+  changed_when: >-
+    'created' in argocd_repository_result.stdout or
+    'configured' in argocd_repository_result.stdout
+  when: argocd_repository_enabled | bool
+
+# Check if argo CD is already configured.
+- name: Check whether the Argo CD root application is already configured
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['-n', argocd_namespace, 'get', 'application', 'root-app', '-o', 'name'] }}"
+  register: argocd_bootstrap_existing
+  failed_when: argocd_bootstrap_existing.rc not in [0, 1]
+  changed_when: false
+
+# Safety net: do not hand Argo CD a repo URL that does not exist.
+- name: Check the bootstrap manifests have no placeholder left
+  ansible.builtin.assert:
+    that: "'REPLACE_ME' not in lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item)"
+    fail_msg: "{{ item }} still contains REPLACE_ME: set your GitHub repository URL."
+  loop: "{{ argocd_bootstrap_files }}"
+  when: argocd_bootstrap_existing.rc != 0
+
+# The manifests are read on the Ansible side and piped to kubectl, so no file is copied to the node.
+- name: Apply the bootstrap manifests
+  ansible.builtin.command:
+    argv: "{{ argocd_kubectl + ['apply', '-f', '-'] }}"
+    stdin: "{{ lookup('ansible.builtin.file', argocd_bootstrap_dir ~ '/' ~ item) }}"
+  loop: "{{ argocd_bootstrap_files }}"
+  register: argocd_bootstrap_result
+  changed_when: "'created' in argocd_bootstrap_result.stdout or 'configured' in argocd_bootstrap_result.stdout"
+  when: argocd_bootstrap_existing.rc != 0
