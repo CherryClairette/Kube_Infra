@@ -1,0 +1,26 @@
+---
+# Argo CD release to install. Pinned for reproducible installs: bump it deliberately.
+argocd_version: "v3.5.6"
+argocd_namespace: argocd
+argocd_install_url: "https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml"
+
+# By default the install is skipped when Argo CD is already running, so re-running
+# the playbook never touches an existing (or self-managed) installation.
+# Set to true to (re)apply the manifest above, e.g. to upgrade before self-management:
+#   ansible-playbook site.yml --tags argocd -e argocd_force_install=true
+argocd_force_install: false
+
+# kubectl on the control plane, authenticated as cluster admin.
+argocd_kubectl:
+  - kubectl
+  - --kubeconfig=/etc/kubernetes/admin.conf
+
+# Manifests applied to hand control over to Git (path relative to this repo).
+argocd_bootstrap_dir: "{{ playbook_dir }}/../argocd/bootstrap"
+argocd_bootstrap_files:
+  - root-app.yaml
+
+# The repository is private and uses SSH. 
+argocd_repository_enabled: true
+argocd_repository_url: "git@github.com:CherryClairette/Kube_Infra.git"
+argocd_repository_secret_name: argocd-repository

@@ -1,0 +1,2 @@
+# Python dependencies for running Ansible (CI and local use)
+ansible-core~=2.21.0

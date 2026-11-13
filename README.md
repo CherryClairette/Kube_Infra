@@ -46,40 +46,46 @@ T-CLO-901-PAR-9-1-kube-5/          # this repo = infra-repo
 │   ├── playbooks/
 │   │   └── site.yml
 │   └── roles/
-├── bootstrap/
-│   └── root-app.yaml         # the one Application we point Argo CD at manually — "app of apps"
-├── apps/                     # one Argo CD Application per component, watched by root-app
-│   ├── networking.yaml
-│   ├── identity.yaml
-│   ├── observability.yaml
-│   ├── logging.yaml
-│   ├── dashboard.yaml
-│   ├── security.yaml
-│   ├── registry.yaml
-│   └── storage.yaml
-└── components/
-    ├── networking/            # EXPOSE — Traefik, cert-manager, Cilium
-    │   ├── base/
-    │   │   └── kustomization.yaml
-    │   └── overlays/cluster/
-    │       └── kustomization.yaml
-    ├── identity/              # IDENTITY — dex, Keycloak
-    ├── observability/         # OBSERVE — kube-prometheus-stack
-    ├── logging/               # LOG — Loki + Grafana Alloy
-    ├── dashboard/             # MANAGE — Headlamp
-    ├── security/              # SECURITY — Sealed Secrets, admission policy
-    ├── registry/              # STORE (images) — Harbor
-    └── storage/               # STORE (data) — EFS CSI driver, StorageClass
-        # each component/* follows the same base/ + overlays/cluster/ pattern as networking/
+├── argocd/
+│   ├── bootstrap/
+│   │   └── root-app.yaml      # the one Application applied during bootstrap — "app of apps"
+│   ├── apps/                  # Argo CD Applications watched by root-app
+│   │   ├── test/              # temporary Argo CD synchronization test
+│   │   │   └── dev-test.yaml
+│   │   ├── networking.yaml
+│   │   ├── identity.yaml
+│   │   ├── observability.yaml
+│   │   ├── logging.yaml
+│   │   ├── dashboard.yaml
+│   │   ├── security.yaml
+│   │   ├── registry.yaml
+│   │   └── storage.yaml
+│   └── components/
+│       ├── networking/           # EXPOSE — Traefik, cert-manager, Cilium
+│       │   ├── base/
+│       │   │   └── kustomization.yaml
+│       │   └── overlays/
+│       │       ├── dev/
+│       │       │   └── kustomization.yaml
+│       │       └── prod/
+│       │           └── kustomization.yaml
+│       ├── identity/              # IDENTITY — dex, Keycloak
+│       ├── observability/         # OBSERVE — kube-prometheus-stack
+│       ├── logging/               # LOG — Loki + Grafana Alloy
+│       ├── dashboard/             # MANAGE — Headlamp
+│       ├── security/              # SECURITY — Sealed Secrets, admission policy
+│       ├── registry/              # STORE (images) — Harbor
+│       └── storage/               # STORE (data) — EFS CSI driver, StorageClass
+│           # each component/* follows the same base/ + overlays/dev/ + overlays/prod/ pattern
 ```
 
-`ansible/` sits outside every path Argo CD is ever pointed at (`bootstrap/`, `apps/`, `components/`) — Argo CD only syncs the exact path each `Application` names, never the whole repo, so the two coexist safely.
+`ansible/` sits outside every path Argo CD is ever pointed at (`argocd/bootstrap/`, `argocd/apps/`, `argocd/components/`) — Argo CD only syncs the exact path each `Application` names, never the whole repo, so the two coexist safely.
 
 Three ideas worth keeping even if the folder names change:
 
 - **`ansible/` runs first, alone.** Nothing else in this repo exists until it's done — there's no Argo CD, no cluster, until `site.yml` finishes.
-- **`bootstrap/` vs `apps/`** — only `root-app.yaml` ever gets applied by hand; it points at `apps/`, and every other Application gets created _by_ Argo CD from there. One manual step, then the repo manages itself.
-- **`base/` + `overlays/`** — every component is defined once in `base/`, and `overlays/cluster/` is where cluster-specific values (URLs, replica counts) patch it. This is the actual reason the brief asks for kustomize, not just a folder-naming preference.
+- **`bootstrap/` vs `apps/`** — only `root-app.yaml` is applied during bootstrap; it points at the selected application directory, and every child Application is created _by_ Argo CD from there. One bootstrap step, then the repo manages itself.
+- **`base/` + `overlays/`** — every component is defined once in `base/`, while `overlays/dev/` and `overlays/prod/` contain environment-specific values such as URLs, replica counts, and resource settings. 
 
 `app-repo`'s layout is still TBD — Questions: does it need the app's source code, or just the Helm chart + GitOps config for an app that lives elsewhere?
 
@@ -98,7 +104,7 @@ Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https:/
 
 - [x] Architecture, tech stack, and initial project plan drafted
 - [x] Team kickoff meeting — walk the architecture, assign ownership, lock the working schedule
-- [ ] Follow Up # 1: present architecture, tech choices, and plan (no working cluster required yet)
+- [x] Follow Up # 1: present architecture, tech choices, and plan (no working cluster required yet)
 - [ ] Cluster provisioning (Ansible)
 - [ ] Platform layer (the 6 jobs above)
 - [ ] App conversion + GitOps deployment

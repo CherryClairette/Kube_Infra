@@ -28,6 +28,13 @@
   roles:
     - cilium
 
+- name: Install Argo CD and apply the bootstrap manifests
+  hosts: control_plane
+  become: true
+  roles:
+    - role: argocd
+      tags: [argocd]
+
 - name: Configure HAProxy
   hosts: control_plane
   become: true
