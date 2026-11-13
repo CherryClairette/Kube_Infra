@@ -23,3 +23,14 @@ spec:
                 namespace: argocd-test-dev
                 kind: Gateway
                 sectionName: web
+      - selector:
+          dnsNames:
+            - argocd.13.135.22.141.sslip.io
+        http01:
+          gatewayHTTPRoute:
+            serviceType: ClusterIP
+            parentRefs:
+              - name: dev-traefik-gateway
+                namespace: argocd-test-dev
+                kind: Gateway
+                sectionName: web-argocd
