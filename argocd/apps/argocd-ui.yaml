@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "50"
+    # Dry-run manifests and then compare the result with the live cluster state. 
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   labels:
     app.kubernetes.io/name: argocd-ui
     app.kubernetes.io/part-of: platform
