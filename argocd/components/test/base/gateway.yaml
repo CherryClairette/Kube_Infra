@@ -20,7 +20,7 @@ spec:
           from: All
     - name: websecure
       protocol: HTTPS
-      port: 443
+      port: 80443
       hostname: app.13.135.22.141.sslip.io
       tls:
         mode: Terminate
