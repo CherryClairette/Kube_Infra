@@ -13,7 +13,6 @@ gateway:
 service:
   spec:
     type: NodePort
-    externalTrafficPolicy: Local
 
 ports:
   web:
