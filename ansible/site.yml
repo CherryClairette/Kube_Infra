@@ -39,4 +39,5 @@
   hosts: control_plane
   become: true
   roles:
-    - haproxy
+    - role: haproxy
+      tags: [haproxy]
