@@ -5,9 +5,6 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "20"
-    # Dry-run manifests and then compare the result with the live cluster state. 
-    # This is useful for detecting changes made by mutation webhooks, which are not visible in the manifests.
-    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
   labels:
     app.kubernetes.io/name: cert-manager-config
     app.kubernetes.io/part-of: platform
