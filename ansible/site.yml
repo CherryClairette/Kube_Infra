@@ -27,3 +27,9 @@
   become: true
   roles:
     - cilium
+
+- name: Configure HAProxy
+  hosts: control_plane
+  become: true
+  roles:
+    - haproxy

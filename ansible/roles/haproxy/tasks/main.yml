@@ -1,0 +1,60 @@
+---
+- name: Install HAProxy
+  ansible.builtin.apt:
+    name: haproxy
+    state: present
+    update_cache: true
+
+- name: Write HAProxy config
+  ansible.builtin.copy:
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
+    validate: haproxy -c -f %s
+    content: |
+      global
+          log /dev/log local0
+          chroot /var/lib/haproxy
+          user haproxy
+          group haproxy
+          daemon
+
+      defaults
+          log     global
+          mode    tcp
+          option  tcplog
+          timeout connect 5s
+          timeout client  1m
+          timeout server  1m
+
+      # HTTP (80) -> Traefik "web" NodePort
+      frontend http_in
+          bind *:80
+          default_backend traefik_web
+
+      backend traefik_web
+      {% for host in groups['kube_nodes'] %}
+          server {{ host }} {{ hostvars[host].ansible_default_ipv4.address }}:30080 check
+      {% endfor %}
+
+      # HTTPS (443) -> Traefik "websecure" NodePort (TLS handled by Traefik)
+      frontend https_in
+          bind *:443
+          default_backend traefik_websecure
+
+      backend traefik_websecure
+      {% for host in groups['kube_nodes'] %}
+          server {{ host }} {{ hostvars[host].ansible_default_ipv4.address }}:30443 check
+      {% endfor %}
+  register: haproxy_cfg
+
+- name: Enable and start HAProxy
+  ansible.builtin.systemd_service:
+    name: haproxy
+    enabled: true
+    state: started
+
+- name: Reload HAProxy if the config changed
+  ansible.builtin.systemd_service:
+    name: haproxy
+    state: reloaded
+  when: haproxy_cfg.changed
