@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/managed-by: argocd
+spec:
+  template:
+    metadata:
+      annotations:
+        argocd-ui/config-revision: "https-2026-11-13"
