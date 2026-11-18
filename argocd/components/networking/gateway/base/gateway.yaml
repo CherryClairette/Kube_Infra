@@ -30,7 +30,7 @@ spec:
             namespace: traefik-tls
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All
     - name: web-argocd
       protocol: HTTP
       port: 8000
