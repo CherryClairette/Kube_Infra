@@ -1,5 +1,9 @@
 deployment:
   replicas: 2
+  podLabels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: platform
+    app.kubernetes.io/managed-by: argocd
 
 providers:
   kubernetesIngress:
@@ -35,8 +39,3 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-
-podLabels:
-  app.kubernetes.io/name: traefik
-  app.kubernetes.io/part-of: platform
-  app.kubernetes.io/managed-by: argocd

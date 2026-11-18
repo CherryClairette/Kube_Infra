@@ -19,8 +19,8 @@ spec:
           gatewayHTTPRoute:
             serviceType: ClusterIP
             parentRefs:
-              - name: dev-traefik-gateway
-                namespace: argocd-test-dev
+              - name: prod-traefik-gateway
+                namespace: traefik
                 kind: Gateway
                 sectionName: web
       - selector:
@@ -30,7 +30,7 @@ spec:
           gatewayHTTPRoute:
             serviceType: ClusterIP
             parentRefs:
-              - name: dev-traefik-gateway
-                namespace: argocd-test-dev
+              - name: prod-traefik-gateway
+                namespace: traefik
                 kind: Gateway
                 sectionName: web-argocd

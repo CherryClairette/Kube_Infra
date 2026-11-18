@@ -20,7 +20,7 @@ spec:
             serviceType: ClusterIP
             parentRefs:
               - name: dev-traefik-gateway
-                namespace: argocd-test-dev
+                namespace: traefik
                 kind: Gateway
                 sectionName: web
       - selector:
@@ -31,6 +31,6 @@ spec:
             serviceType: ClusterIP
             parentRefs:
               - name: dev-traefik-gateway
-                namespace: argocd-test-dev
+                namespace: traefik
                 kind: Gateway
                 sectionName: web-argocd

@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: ReferenceGrant
 metadata:
-  name: allow-dev-gateway-tls
+  name: allow-traefik-gateway-tls
   namespace: traefik-tls
   annotations:
     argocd.argoproj.io/sync-wave: "30"
@@ -13,7 +13,7 @@ spec:
   from:
     - group: gateway.networking.k8s.io
       kind: Gateway
-      namespace: argocd-test-dev
+      namespace: traefik
   to:
     - group: ""
       kind: Secret

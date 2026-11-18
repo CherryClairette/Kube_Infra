@@ -12,7 +12,7 @@ metadata:
 spec:
   parentRefs:
     - name: dev-traefik-gateway
-      namespace: argocd-test-dev
+      namespace: traefik
       sectionName: websecure-argocd
   hostnames:
     - argocd.13.135.22.141.sslip.io

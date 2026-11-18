@@ -4,7 +4,6 @@ resources:
   - configmap.yaml
   - whoami-deployment.yaml
   - whoami-service.yaml
-  - gateway.yaml
   - httproute.yaml
   - http-to-https-redirect.yaml
 configurations:
