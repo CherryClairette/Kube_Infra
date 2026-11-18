@@ -96,6 +96,19 @@ Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https:/
 - Only ports **80/443** are open inbound — worth confirming early how Traefik binds to those from a NodePort setup
 - Instances auto-shutdown daily at **9 PM Paris time**; restart anytime
 
+## Access to the applications
+
+Applications and services reachable from a web browser:
+
+| Service / App | Description | Link |
+|---------------|-------------|------|
+| Argo CD UI | GitOps dashboard: status of every deployed application | https://argocd.13.135.22.141.sslip.io |
+| Test app | Temporary test application (`whoami`) that checks the whole chain | https://app.13.135.22.141.sslip.io |
+| sample-app-master | The project's application | TBD |
+
+> [!NOTE]
+> Hostnames are built from the public IP of `kube-1` (`13.135.22.141`) with [sslip.io](https://sslip.io), which resolves any name containing an IP to that IP. If that IP changes, the hostnames change with it.
+
 ## Roadmap
 
 - [x] Architecture, tech stack, and initial project plan drafted
