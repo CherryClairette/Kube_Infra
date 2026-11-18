@@ -5,6 +5,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "30"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   labels:
     app.kubernetes.io/name: traefik-gateway
     app.kubernetes.io/part-of: platform
