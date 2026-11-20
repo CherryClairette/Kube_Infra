@@ -3,8 +3,6 @@ kind: Gateway
 metadata:
   name: traefik-gateway
   namespace: traefik
-  annotations:
-    argocd.argoproj.io/sync-wave: "30"
   labels:
     app.kubernetes.io/name: traefik-gateway
     app.kubernetes.io/part-of: gateway-api-test
