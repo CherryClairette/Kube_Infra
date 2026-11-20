@@ -6,7 +6,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "30"
   labels:
-    app.kubernetes.io/name: allow-dev-gateway-tls
+    app.kubernetes.io/name: allow-traefik-gateway-tls
     app.kubernetes.io/part-of: cert-manager
     app.kubernetes.io/managed-by: argocd
 spec:

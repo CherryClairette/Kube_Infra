@@ -5,7 +5,7 @@ metadata:
   namespace: traefik
   labels:
     app.kubernetes.io/name: traefik-gateway
-    app.kubernetes.io/part-of: gateway-api-test
+    app.kubernetes.io/part-of: platform
     app.kubernetes.io/managed-by: argocd
 spec:
   gatewayClassName: traefik
