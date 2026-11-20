@@ -1,0 +1,50 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: traefik-gateway
+  namespace: traefik
+  labels:
+    app.kubernetes.io/name: traefik-gateway
+    app.kubernetes.io/part-of: platform
+    app.kubernetes.io/managed-by: argocd
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: web
+      protocol: HTTP
+      port: 8000
+      hostname: app.13.135.22.141.sslip.io
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure
+      protocol: HTTPS
+      port: 8443
+      hostname: app.13.135.22.141.sslip.io
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: whoami-staging-tls
+            namespace: traefik-tls
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: web-argocd
+      protocol: HTTP
+      port: 8000
+      hostname: argocd.13.135.22.141.sslip.io
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure-argocd
+      protocol: HTTPS
+      port: 8443
+      hostname: argocd.13.135.22.141.sslip.io
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: argocd-staging-tls
+            namespace: traefik-tls
+      allowedRoutes:
+        namespaces:
+          from: All

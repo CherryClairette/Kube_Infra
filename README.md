@@ -2,13 +2,9 @@
 
 Epitech MSc Pro 2027 · T-CLO-901-PAR-9-1 · Team of 4
 
-## Status
-
-**Planning.** Architecture and tech stack are decided; implementation starts after the team kickoff meeting. This README will grow as the project does — right now it's a starting point, not a spec.
-
 ## What this is
 
-We're building a fully-equipped Kubernetes cluster on 3 dedicated AWS nodes: not just hosting an app, but the management and observability tooling around it (ingress, dashboard, monitoring, logging, GitOps) — provisioned reproducibly with Ansible, secured with OIDC + an admission policy, and deployed the whole way through GitOps.
+We're building a fully-equipped Kubernetes cluster on 3 dedicated AWS nodes: not just hosting an app, but the management and observability tooling around it (dashboard, monitoring, logging, GitOps). With everything provisioned reproducibly with Ansible, secured with OIDC + an admission policy, and deployed the whole way through GitOps.
 
 ## How we work
 
@@ -34,7 +30,7 @@ Wrapping all six: **Identity** (dex + Keycloak, OIDC on every tool and the API s
 
 ## Repository structure
 
-The brief asks for a clean split between infrastructure and application concerns, each with its own GitOps repository. We're running that as **two repos, not three**: this repo doubles as `infra-repo` (docs, Ansible, and everything Argo CD reconciles for the platform); `app-repo` is separate and holds the app's Helm chart + GitOps config.
+A clean split between infrastructure and application concerns, each with its own GitOps repository has been implemented. We're therefore have **two repos**: this repo which is the `infra-repo` (docs, Ansible, and everything Argo CD reconciles for the platform) and `app-repo` (see: [Kube_App](kube-app)) is separate and holds the app's Helm chart + GitOps config.
 
 **This repo's proposed layout** (starting point for the kickoff meeting, not final):
 
@@ -91,7 +87,7 @@ Three ideas worth keeping even if the folder names change:
 
 ## Environment access
 
-Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https://github.com/EpitechMscProPromo2027/T-CLO-901-PAR-9-1-kube-5/wiki/IV.-AWS-Access-Runbook):
+Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https://github.com/CherryClairette/Kube_Infra/wiki/IV.-AWS-Access-Runbook):
 
 - Access via Epitech's AWS IAM Identity Center portal, role `kubequest2-student`
 - No SSH keys by default — connect through **AWS SSM Session Manager** (console or CLI)
@@ -100,12 +96,25 @@ Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https:/
 - Only ports **80/443** are open inbound — worth confirming early how Traefik binds to those from a NodePort setup
 - Instances auto-shutdown daily at **9 PM Paris time**; restart anytime
 
+## Access to the applications
+
+Applications and services reachable from a web browser:
+
+| Service / App | Description | Link |
+|---------------|-------------|------|
+| Argo CD UI | GitOps dashboard: status of every deployed application | https://argocd.13.135.22.141.sslip.io |
+| Test app | Temporary test application (`whoami`) that checks the whole chain | https://app.13.135.22.141.sslip.io |
+| sample-app-master | The project's application | TBD |
+
+> [!NOTE]
+> Hostnames are built from the public IP of `kube-1` (`13.135.22.141`) with [sslip.io](https://sslip.io), which resolves any name containing an IP to that IP. If that IP changes, the hostnames change with it.
+
 ## Roadmap
 
 - [x] Architecture, tech stack, and initial project plan drafted
 - [x] Team kickoff meeting — walk the architecture, assign ownership, lock the working schedule
 - [x] Follow Up # 1: present architecture, tech choices, and plan (no working cluster required yet)
-- [ ] Cluster provisioning (Ansible)
+- [x] Cluster provisioning (Ansible)
 - [ ] Platform layer (the 6 jobs above)
 - [ ] App conversion + GitOps deployment
 - [ ] Follow Up # 2 (End of November 2026)
@@ -115,6 +124,6 @@ Quick reference — full details in [`Project Wiki: AWS Access Runbook`](https:/
 ## References
 
 - [`kube-project.pdf`](./kube-project.pdf) — the brief (not tracked in git)
-- [`KubeQuest2 - User Guide_0923.pdf`](./KubeQuest2%20-%20User%20Guide_0923.pdf) — AWS environment access
+- [`KubeQuest2 - User Guide_0923.pdf`](./KubeQuest2%20-%20User%20Guide_0923.pdf) — AWS environment access (not tracked in git)
 - [Reference Architecture](https://whimsical.com/cia547/kubekuby-FdNqP5i9U6GAwjxE3WtCyR) — diagrams
-- [Tech decisions](https://github.com/EpitechMscProPromo2027/T-CLO-901-PAR-9-1-kube-5/wiki/III.-Technical-solutions) - technical solutions
+- [Project's Wiki generic and technical documentation](https://github.com/CherryClairette/Kube_Infra/wiki)

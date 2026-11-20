@@ -36,6 +36,29 @@
         argv: "{{ argocd_kubectl + ['apply', '--server-side', '-n', argocd_namespace, '-f', argocd_install_url] }}"
       changed_when: true
 
+- name: Apply conservative resources to core Argo CD workloads
+  ansible.builtin.command:
+    argv:
+      "{{ argocd_kubectl + ['-n', argocd_namespace, 'patch', item.resource,
+      '--type', 'strategic', '--patch', {
+        'spec': {
+          'template': {
+            'spec': {
+              'containers': [{
+                'name': item.container,
+                'resources': {
+                  'requests': item.requests,
+                  'limits': item.limits
+                }
+              }]
+            }
+          }
+        }
+      } | to_json] }}"
+  loop: "{{ argocd_resource_settings }}"
+  register: argocd_resource_patch_result
+  changed_when: "'patched' in argocd_resource_patch_result.stdout"
+
 - name: Wait for the Argo CD CRDs to be established
   ansible.builtin.command:
     argv: >-

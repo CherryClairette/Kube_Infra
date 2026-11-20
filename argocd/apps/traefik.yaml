@@ -18,7 +18,7 @@ spec:
       helm:
         releaseName: traefik
         valueFiles:
-          - $values/argocd/components/networking/overlays/dev/values.yaml
+          - $values/argocd/components/networking/traefik/values-dev.yaml
     - repoURL: git@github.com:CherryClairette/Kube_Infra.git
       targetRevision: feat/argo-cd
       ref: values
@@ -32,4 +32,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-      - ApplyOutOfSyncOnly=true

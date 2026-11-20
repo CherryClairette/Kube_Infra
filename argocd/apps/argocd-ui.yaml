@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-ui
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "50"
+    # Dry-run manifests and then compare the result with the live cluster state. 
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+  labels:
+    app.kubernetes.io/name: argocd-ui
+    app.kubernetes.io/part-of: platform
+    app.kubernetes.io/managed-by: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:CherryClairette/Kube_Infra.git
+    targetRevision: feat/argo-cd
+    path: argocd/components/argocd-ui/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

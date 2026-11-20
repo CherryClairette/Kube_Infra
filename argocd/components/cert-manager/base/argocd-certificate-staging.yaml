@@ -1,17 +1,18 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: whoami-staging
+  name: argocd-staging
+  namespace: traefik-tls
   annotations:
     argocd.argoproj.io/sync-wave: "30"
   labels:
-    app.kubernetes.io/name: whoami-staging
-    app.kubernetes.io/part-of: gateway-api-test
+    app.kubernetes.io/name: argocd-staging
+    app.kubernetes.io/part-of: cert-manager
     app.kubernetes.io/managed-by: argocd
 spec:
-  secretName: whoami-staging-tls
+  secretName: argocd-staging-tls
   dnsNames:
-    - app.13.135.22.141.sslip.io
+    - argocd.13.135.22.141.sslip.io
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
