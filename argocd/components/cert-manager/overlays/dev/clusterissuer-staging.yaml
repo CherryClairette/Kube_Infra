@@ -10,7 +10,6 @@ metadata:
     app.kubernetes.io/managed-by: argocd
 spec:
   acme:
-    email: buket-meltem.ozkan@epitech.eu
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging-account-key
