@@ -16,7 +16,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:CherryClairette/Kube_Infra.git
-    targetRevision: feat/argo-cd
+    targetRevision: dev
     path: argocd/components/cert-manager/overlays/dev
   destination:
     server: https://kubernetes.default.svc
