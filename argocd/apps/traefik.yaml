@@ -20,7 +20,7 @@ spec:
         valueFiles:
           - $values/argocd/components/networking/traefik/values-dev.yaml
     - repoURL: git@github.com:CherryClairette/Kube_Infra.git
-      targetRevision: feat/argo-cd
+      targetRevision: dev
       ref: values
   destination:
     server: https://kubernetes.default.svc
