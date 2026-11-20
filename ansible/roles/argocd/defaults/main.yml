@@ -24,3 +24,39 @@ argocd_bootstrap_files:
 argocd_repository_enabled: true
 argocd_repository_url: "git@github.com:CherryClairette/Kube_Infra.git"
 argocd_repository_secret_name: argocd-repository
+
+# Conservative resources for the core Argo CD workloads. These are applied
+# after the upstream manifest so the installation remains pinned and reproducible.
+argocd_resource_settings:
+  - resource: deployment/argocd-server
+    container: argocd-server
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  - resource: deployment/argocd-repo-server
+    container: argocd-repo-server
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  - resource: deployment/argocd-redis
+    container: redis
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  - resource: statefulset/argocd-application-controller
+    container: argocd-application-controller
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
