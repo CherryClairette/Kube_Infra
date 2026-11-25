@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: keycloak
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: platform
+    includeSelectors: false
+
+resources:
+  - namespace.yaml
+  - sealed-secret.yaml
+  - postgres.yaml
+  - keycloak.yaml
+  - httproute.yaml
+
+configMapGenerator:
+  - name: keycloak-realm
+    files:
+      - kube-realm.json=realm/kube-realm.json
