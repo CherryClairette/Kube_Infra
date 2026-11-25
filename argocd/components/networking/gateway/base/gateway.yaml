@@ -48,3 +48,22 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: web-keycloak
+      protocol: HTTP
+      port: 8000
+      hostname: keycloak.13.135.22.141.sslip.io
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure-keycloak
+      protocol: HTTPS
+      port: 8443
+      hostname: keycloak.13.135.22.141.sslip.io
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: keycloak-staging-tls
+            namespace: traefik-tls
+      allowedRoutes:
+        namespaces:
+          from: All

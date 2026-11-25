@@ -5,3 +5,4 @@ resources:
   - certificate-staging.yaml
   - argocd-certificate-staging.yaml
   - referencegrant.yaml
+  - keycloak-certificate-staging.yaml

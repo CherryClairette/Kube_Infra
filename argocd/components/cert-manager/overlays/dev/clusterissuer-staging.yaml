@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: argocd
 spec:
   acme:
-    email: buket-meltem.ozkan@epitech.eu
+    email: admin@gmail.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging-account-key
@@ -34,3 +34,14 @@ spec:
                 namespace: traefik
                 kind: Gateway
                 sectionName: web-argocd
+      - selector:
+          dnsNames:
+            - keycloak.13.135.22.141.sslip.io
+        http01:
+          gatewayHTTPRoute:
+            serviceType: ClusterIP
+            parentRefs:
+              - name: dev-traefik-gateway
+                namespace: traefik
+                kind: Gateway
+                sectionName: web-keycloak

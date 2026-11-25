@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-staging
+  namespace: traefik-tls
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: keycloak-staging
+    app.kubernetes.io/part-of: cert-manager
+    app.kubernetes.io/managed-by: argocd
+spec:
+  secretName: keycloak-staging-tls
+  dnsNames:
+    - keycloak.13.135.22.141.sslip.io
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
