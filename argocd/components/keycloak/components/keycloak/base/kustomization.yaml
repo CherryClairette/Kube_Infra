@@ -9,10 +9,11 @@ labels:
 
 resources:
   - namespace.yaml
-  - sealed-secret.yaml
+  - sealed-secret.yaml   # created by ../make-sealed-secrets.sh
   - postgres.yaml
   - keycloak.yaml
-  - httproute.yaml
+  - https-route.yaml
+  - http-route.yaml
 
 configMapGenerator:
   - name: keycloak-realm
