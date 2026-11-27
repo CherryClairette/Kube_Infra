@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: dex-keycloak-client
+  namespace: dex
+spec:
+  encryptedData:
+    client-secret: AgCztmYHylxmR5tF6fOtyEPOz8dcUIhinR+nqKOD7OgSv5ctLmFU9D4SpMOGvnJiNbdS2wdOWUTkvwN4hxBxao8SF2yyyZfUGg/LsToclv44KqJZGIQPtOteZsrcpdju9t/+AQJTMFPrbXBoAThEUlkZqP0Lk8bfOG94IDn8gyDDjkzI4+tsBdxwLriTzNmxMYole0BKmr+EaYq2WLm6BRzXBSq0OYociYw4MqSBfO2h6bJc//XV/o+evddDvvhL5BeJ06peFDPoKmqmqVkOJJAgPnyMcQkZBSD8swq3uC2ejIBgIyaSS+zmbY43rlzd6XtFzeemP0WGAxi9c/eL6OWi4RBeMUhfbUkYQUFn8YGLljikaIak2345BAjRgsvwmkpG+8F0WM5FQHc270Jy5hcBeYEeSVKZiVrkRvOWSkETiI87kwwzEhDwgxxbMQ6AuOACMFiyi2uHHpba4kRtI5sEyYb0+FFOn+D8b3yvH5XFzMlTQUccRVLswlAzd3rOceqlEF8E2wa7GiLyHZVI04KNXsrpvlXwktGh1jS4hGSbu2tGgr3Ti+OfHPesW6Q2C9Mx3XZMC/+dTdZwJ3E8ugR2O5e5EVEYsRSD6ygtqQwmh6NuBjbKVq5TzzwH/nO4yTQMdEAXGZGgbEEKgLH5HCD4Vs457BVOTzy0c+qyR8vJcbxB+2cC1ssFJMu3cHSIgAdqvNYgkEM/Zh0cr0y+jU0gefn8Jh0p4AFlcyPgpY59TQ==
+  template:
+    metadata:
+      name: dex-keycloak-client
+      namespace: dex
